@@ -1,0 +1,14 @@
+syntax = "proto3";
+package arran8901.chainlogplatform.contract;
+
+import "gogoproto/gogo.proto";
+import "contract/params.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "github.com/arran8901/chainlog-platform/x/contract/types";
+
+// GenesisState defines the contract module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  // this line is used by starport scaffolding # genesis/proto/state
+}
