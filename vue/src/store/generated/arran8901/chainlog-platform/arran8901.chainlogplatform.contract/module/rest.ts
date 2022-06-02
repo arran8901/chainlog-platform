@@ -18,12 +18,37 @@ export interface ContractMsgCreateContractResponse {
  */
 export type ContractParams = object;
 
+export interface ContractQueryAllSmartContractResponse {
+  smartContract?: ContractSmartContract[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
+export interface ContractQueryGetSmartContractResponse {
+  smartContract?: ContractSmartContract;
+}
+
 /**
  * QueryParamsResponse is response type for the Query/Params RPC method.
  */
 export interface ContractQueryParamsResponse {
   /** params holds all the parameters of this module. */
   params?: ContractParams;
+}
+
+export interface ContractSmartContract {
+  address?: string;
+  code?: string;
+  dynamicKb?: string;
 }
 
 export interface ProtobufAny {
@@ -35,6 +60,69 @@ export interface RpcStatus {
   code?: number;
   message?: string;
   details?: ProtobufAny[];
+}
+
+/**
+* message SomeRequest {
+         Foo some_parameter = 1;
+         PageRequest pagination = 2;
+ }
+*/
+export interface V1Beta1PageRequest {
+  /**
+   * key is a value returned in PageResponse.next_key to begin
+   * querying the next page most efficiently. Only one of offset or key
+   * should be set.
+   * @format byte
+   */
+  key?: string;
+
+  /**
+   * offset is a numeric offset that can be used when key is unavailable.
+   * It is less efficient than using key. Only one of offset or key should
+   * be set.
+   * @format uint64
+   */
+  offset?: string;
+
+  /**
+   * limit is the total number of results to be returned in the result page.
+   * If left empty it will default to a value to be set by each app.
+   * @format uint64
+   */
+  limit?: string;
+
+  /**
+   * count_total is set to true  to indicate that the result set should include
+   * a count of the total number of items available for pagination in UIs.
+   * count_total is only respected when offset is used. It is ignored when key
+   * is set.
+   */
+  count_total?: boolean;
+
+  /**
+   * reverse is set to true if results are to be returned in the descending order.
+   *
+   * Since: cosmos-sdk 0.43
+   */
+  reverse?: boolean;
+}
+
+/**
+* PageResponse is to be embedded in gRPC response messages where the
+corresponding request message has used PageRequest.
+
+ message SomeResponse {
+         repeated Bar results = 1;
+         PageResponse page = 2;
+ }
+*/
+export interface V1Beta1PageResponse {
+  /** @format byte */
+  next_key?: string;
+
+  /** @format uint64 */
+  total?: string;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -244,6 +332,48 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryParams = (params: RequestParams = {}) =>
     this.request<ContractQueryParamsResponse, RpcStatus>({
       path: `/arran8901/chainlog-platform/contract/params`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QuerySmartContractAll
+   * @summary Queries a list of SmartContract items.
+   * @request GET:/arran8901/chainlog-platform/contract/smart_contract
+   */
+  querySmartContractAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<ContractQueryAllSmartContractResponse, RpcStatus>({
+      path: `/arran8901/chainlog-platform/contract/smart_contract`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QuerySmartContract
+   * @summary Queries a SmartContract by index.
+   * @request GET:/arran8901/chainlog-platform/contract/smart_contract/{address}
+   */
+  querySmartContract = (address: string, params: RequestParams = {}) =>
+    this.request<ContractQueryGetSmartContractResponse, RpcStatus>({
+      path: `/arran8901/chainlog-platform/contract/smart_contract/${address}`,
       method: "GET",
       format: "json",
       ...params,

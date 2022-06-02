@@ -5,6 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "contract/params.proto";
+import "contract/smart_contract.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/arran8901/chainlog-platform/x/contract/types";
@@ -15,7 +16,17 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/arran8901/chainlog-platform/contract/params";
   }
-  // this line is used by starport scaffolding # 2
+  // Queries a SmartContract by index.
+	rpc SmartContract(QueryGetSmartContractRequest) returns (QueryGetSmartContractResponse) {
+		option (google.api.http).get = "/arran8901/chainlog-platform/contract/smart_contract/{address}";
+	}
+
+	// Queries a list of SmartContract items.
+	rpc SmartContractAll(QueryAllSmartContractRequest) returns (QueryAllSmartContractResponse) {
+		option (google.api.http).get = "/arran8901/chainlog-platform/contract/smart_contract";
+	}
+
+// this line is used by starport scaffolding # 2
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -25,6 +36,24 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetSmartContractRequest {
+	  string address = 1;
+
+}
+
+message QueryGetSmartContractResponse {
+	SmartContract smartContract = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllSmartContractRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllSmartContractResponse {
+	repeated SmartContract smartContract = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // this line is used by starport scaffolding # 3

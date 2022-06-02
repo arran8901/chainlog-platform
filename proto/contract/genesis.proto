@@ -3,6 +3,7 @@ package arran8901.chainlogplatform.contract;
 
 import "gogoproto/gogo.proto";
 import "contract/params.proto";
+import "contract/smart_contract.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "github.com/arran8901/chainlog-platform/x/contract/types";
@@ -10,5 +11,6 @@ option go_package = "github.com/arran8901/chainlog-platform/x/contract/types";
 // GenesisState defines the contract module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
+  repeated SmartContract smartContractList = 2 [(gogoproto.nullable) = false];
   // this line is used by starport scaffolding # genesis/proto/state
 }
