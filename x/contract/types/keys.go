@@ -1,5 +1,7 @@
 package types
 
+import sdk "github.com/cosmos/cosmos-sdk/types"
+
 const (
 	// ModuleName defines the module name
 	ModuleName = "contract"
@@ -19,4 +21,15 @@ const (
 
 func KeyPrefix(p string) []byte {
 	return []byte(p)
+}
+
+// Keys for smart contract mapping
+const (
+	// SmartContractKeyPrefix is the prefix for a stored smart contract
+	SmartContractKeyPrefix = "SmartContract/"
+)
+
+// SmartContractStoreKey returns the store key for a given smart contract address
+func SmartContractStoreKey(address sdk.AccAddress) []byte {
+	return append([]byte(SmartContractKeyPrefix), address.Bytes()...)
 }
