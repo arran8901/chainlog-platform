@@ -3,10 +3,12 @@ package types
 // DONTCOVER
 
 import (
+	fmt "fmt"
+
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // x/contract module sentinel errors
 var (
-	ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
+	ErrContractCodeTooLarge = sdkerrors.Register(ModuleName, 1100, fmt.Sprintf("smart contract code exceeds size limit of %dB", CodeSizeLimit))
 )
