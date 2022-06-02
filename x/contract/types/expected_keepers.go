@@ -10,6 +10,8 @@ type AccountKeeper interface {
 	GetAccount(ctx sdk.Context, addr sdk.AccAddress) types.AccountI
 	// Methods imported from account should be defined here
 
+	NewAccountWithAddress(sdk.Context, sdk.AccAddress) types.AccountI
+	SetAccount(sdk.Context, types.AccountI)
 	GetSequence(sdk.Context, sdk.AccAddress) (uint64, error)
 }
 
@@ -19,4 +21,5 @@ type BankKeeper interface {
 	// Methods imported from bank should be defined here
 
 	GetAllBalances(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
+	SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
 }

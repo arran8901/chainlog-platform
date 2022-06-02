@@ -24,5 +24,32 @@ func (k msgServer) CreateContract(goCtx context.Context, msg *types.MsgCreateCon
 	creatorSequence, _ := k.accountKeeper.GetSequence(ctx, creator)
 	contractAddress := types.GenerateContractAddress(creator, creatorSequence)
 
+	// Create new account for contract and set in account store
+	contractAccount := k.accountKeeper.NewAccountWithAddress(ctx, contractAddress)
+	k.accountKeeper.SetAccount(ctx, contractAccount)
+
+	// Transfer value from creator to contract
+	err := k.bankKeeper.SendCoins(ctx, creator, contractAddress, value)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create contract struct with code and initially empty dynamic KB
+	contract := types.SmartContract{
+		Code:      msg.Code,
+		DynamicKb: "",
+	}
+	// Set contract in contract store
+	k.SetSmartContract(ctx, contractAddress, contract)
+
+	// Emit event with contract address
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+			sdk.NewAttribute("address", contractAddress.String()),
+		),
+	)
+
+	// Return contract address
 	return &types.MsgCreateContractResponse{ContractAddress: contractAddress.String()}, nil
 }
