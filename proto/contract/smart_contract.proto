@@ -6,3 +6,9 @@ message SmartContract {
   string code = 1;
   string dynamicKb = 2;
 }
+
+message SmartContractWithAddress {
+  string contractAddress = 1;
+  string code = 2;
+  string dynamicKb = 3;
+}

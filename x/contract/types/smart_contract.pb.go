@@ -74,26 +74,90 @@ func (m *SmartContract) GetDynamicKb() string {
 	return ""
 }
 
+type SmartContractWithAddress struct {
+	ContractAddress string `protobuf:"bytes,1,opt,name=contractAddress,proto3" json:"contractAddress,omitempty"`
+	Code            string `protobuf:"bytes,2,opt,name=code,proto3" json:"code,omitempty"`
+	DynamicKb       string `protobuf:"bytes,3,opt,name=dynamicKb,proto3" json:"dynamicKb,omitempty"`
+}
+
+func (m *SmartContractWithAddress) Reset()         { *m = SmartContractWithAddress{} }
+func (m *SmartContractWithAddress) String() string { return proto.CompactTextString(m) }
+func (*SmartContractWithAddress) ProtoMessage()    {}
+func (*SmartContractWithAddress) Descriptor() ([]byte, []int) {
+	return fileDescriptor_abff4f5394d93641, []int{1}
+}
+func (m *SmartContractWithAddress) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SmartContractWithAddress) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SmartContractWithAddress.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SmartContractWithAddress) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SmartContractWithAddress.Merge(m, src)
+}
+func (m *SmartContractWithAddress) XXX_Size() int {
+	return m.Size()
+}
+func (m *SmartContractWithAddress) XXX_DiscardUnknown() {
+	xxx_messageInfo_SmartContractWithAddress.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SmartContractWithAddress proto.InternalMessageInfo
+
+func (m *SmartContractWithAddress) GetContractAddress() string {
+	if m != nil {
+		return m.ContractAddress
+	}
+	return ""
+}
+
+func (m *SmartContractWithAddress) GetCode() string {
+	if m != nil {
+		return m.Code
+	}
+	return ""
+}
+
+func (m *SmartContractWithAddress) GetDynamicKb() string {
+	if m != nil {
+		return m.DynamicKb
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*SmartContract)(nil), "arran8901.chainlogplatform.contract.SmartContract")
+	proto.RegisterType((*SmartContractWithAddress)(nil), "arran8901.chainlogplatform.contract.SmartContractWithAddress")
 }
 
 func init() { proto.RegisterFile("contract/smart_contract.proto", fileDescriptor_abff4f5394d93641) }
 
 var fileDescriptor_abff4f5394d93641 = []byte{
-	// 190 bytes of a gzipped FileDescriptorProto
+	// 229 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x4d, 0xce, 0xcf, 0x2b,
 	0x29, 0x4a, 0x4c, 0x2e, 0xd1, 0x2f, 0xce, 0x4d, 0x2c, 0x2a, 0x89, 0x87, 0x71, 0xf5, 0x0a, 0x8a,
 	0xf2, 0x4b, 0xf2, 0x85, 0x94, 0x13, 0x8b, 0x8a, 0x12, 0xf3, 0x2c, 0x2c, 0x0d, 0x0c, 0xf5, 0x92,
 	0x33, 0x12, 0x33, 0xf3, 0x72, 0xf2, 0xd3, 0x0b, 0x72, 0x12, 0x4b, 0xd2, 0xf2, 0x8b, 0x72, 0xf5,
 	0x60, 0x4a, 0x95, 0x1c, 0xb9, 0x78, 0x83, 0x41, 0x9a, 0x9d, 0xa1, 0x02, 0x42, 0x42, 0x5c, 0x2c,
 	0xc9, 0xf9, 0x29, 0xa9, 0x12, 0x8c, 0x0a, 0x8c, 0x1a, 0x9c, 0x41, 0x60, 0xb6, 0x90, 0x0c, 0x17,
-	0x67, 0x4a, 0x65, 0x5e, 0x62, 0x6e, 0x66, 0xb2, 0x77, 0x92, 0x04, 0x13, 0x58, 0x02, 0x21, 0xe0,
-	0x14, 0x78, 0xe2, 0x91, 0x1c, 0xe3, 0x85, 0x47, 0x72, 0x8c, 0x0f, 0x1e, 0xc9, 0x31, 0x4e, 0x78,
-	0x2c, 0xc7, 0x70, 0xe1, 0xb1, 0x1c, 0xc3, 0x8d, 0xc7, 0x72, 0x0c, 0x51, 0xe6, 0xe9, 0x99, 0x25,
-	0x19, 0xa5, 0x49, 0x7a, 0xc9, 0xf9, 0xb9, 0xfa, 0x70, 0xc7, 0xe8, 0xc3, 0x1c, 0xa3, 0x0b, 0x73,
-	0x8d, 0x7e, 0x85, 0x3e, 0xdc, 0x27, 0x25, 0x95, 0x05, 0xa9, 0xc5, 0x49, 0x6c, 0x60, 0x1f, 0x18,
-	0x03, 0x02, 0x00, 0x00, 0xff, 0xff, 0xa8, 0x1e, 0xd6, 0x79, 0xe2, 0x00, 0x00, 0x00,
+	0x67, 0x4a, 0x65, 0x5e, 0x62, 0x6e, 0x66, 0xb2, 0x77, 0x92, 0x04, 0x13, 0x58, 0x02, 0x21, 0xa0,
+	0x54, 0xc6, 0x25, 0x81, 0x62, 0x44, 0x78, 0x66, 0x49, 0x86, 0x63, 0x4a, 0x4a, 0x51, 0x6a, 0x71,
+	0xb1, 0x90, 0x06, 0x17, 0x3f, 0xcc, 0x2a, 0xa8, 0x10, 0xd4, 0x60, 0x74, 0x61, 0xb8, 0xbd, 0x4c,
+	0xb8, 0xec, 0x65, 0x46, 0xb3, 0xd7, 0x29, 0xf0, 0xc4, 0x23, 0x39, 0xc6, 0x0b, 0x8f, 0xe4, 0x18,
+	0x1f, 0x3c, 0x92, 0x63, 0x9c, 0xf0, 0x58, 0x8e, 0xe1, 0xc2, 0x63, 0x39, 0x86, 0x1b, 0x8f, 0xe5,
+	0x18, 0xa2, 0xcc, 0xd3, 0x33, 0x4b, 0x32, 0x4a, 0x93, 0xf4, 0x92, 0xf3, 0x73, 0xf5, 0xe1, 0x81,
+	0xa0, 0x0f, 0x0b, 0x04, 0x5d, 0x58, 0x28, 0xe8, 0x57, 0xe8, 0xc3, 0x43, 0xb0, 0xa4, 0xb2, 0x20,
+	0xb5, 0x38, 0x89, 0x0d, 0x1c, 0x72, 0xc6, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0x6a, 0xc2, 0xc4,
+	0x97, 0x5a, 0x01, 0x00, 0x00,
 }
 
 func (m *SmartContract) Marshal() (dAtA []byte, err error) {
@@ -133,6 +197,50 @@ func (m *SmartContract) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *SmartContractWithAddress) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SmartContractWithAddress) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SmartContractWithAddress) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.DynamicKb) > 0 {
+		i -= len(m.DynamicKb)
+		copy(dAtA[i:], m.DynamicKb)
+		i = encodeVarintSmartContract(dAtA, i, uint64(len(m.DynamicKb)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Code) > 0 {
+		i -= len(m.Code)
+		copy(dAtA[i:], m.Code)
+		i = encodeVarintSmartContract(dAtA, i, uint64(len(m.Code)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.ContractAddress) > 0 {
+		i -= len(m.ContractAddress)
+		copy(dAtA[i:], m.ContractAddress)
+		i = encodeVarintSmartContract(dAtA, i, uint64(len(m.ContractAddress)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintSmartContract(dAtA []byte, offset int, v uint64) int {
 	offset -= sovSmartContract(v)
 	base := offset
@@ -150,6 +258,27 @@ func (m *SmartContract) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Code)
+	if l > 0 {
+		n += 1 + l + sovSmartContract(uint64(l))
+	}
+	l = len(m.DynamicKb)
+	if l > 0 {
+		n += 1 + l + sovSmartContract(uint64(l))
+	}
+	return n
+}
+
+func (m *SmartContractWithAddress) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ContractAddress)
+	if l > 0 {
+		n += 1 + l + sovSmartContract(uint64(l))
+	}
 	l = len(m.Code)
 	if l > 0 {
 		n += 1 + l + sovSmartContract(uint64(l))
@@ -229,6 +358,152 @@ func (m *SmartContract) Unmarshal(dAtA []byte) error {
 			m.Code = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DynamicKb", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSmartContract
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthSmartContract
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthSmartContract
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DynamicKb = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipSmartContract(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthSmartContract
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SmartContractWithAddress) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowSmartContract
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SmartContractWithAddress: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SmartContractWithAddress: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContractAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSmartContract
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthSmartContract
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthSmartContract
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContractAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSmartContract
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthSmartContract
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthSmartContract
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Code = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field DynamicKb", wireType)
 			}

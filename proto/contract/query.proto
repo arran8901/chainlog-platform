@@ -5,6 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "contract/params.proto";
+import "contract/smart_contract.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/arran8901/chainlog-platform/x/contract/types";
@@ -47,12 +48,12 @@ message QueryContractCodeResponse {
 }
 
 message QueryAllContractsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 message QueryAllContractsResponse {
-  string contractAddress = 1;
-  string code = 2;
-  string dynamicKb = 3;
+  repeated SmartContractWithAddress contracts = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // this line is used by starport scaffolding # 3

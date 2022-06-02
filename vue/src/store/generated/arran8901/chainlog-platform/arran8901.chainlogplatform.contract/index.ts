@@ -2,9 +2,10 @@ import { txClient, queryClient, MissingWalletError , registry} from './module'
 
 import { Params } from "./module/types/contract/params"
 import { SmartContract } from "./module/types/contract/smart_contract"
+import { SmartContractWithAddress } from "./module/types/contract/smart_contract"
 
 
-export { Params, SmartContract };
+export { Params, SmartContract, SmartContractWithAddress };
 
 async function initTxClient(vuexGetters) {
 	return await txClient(vuexGetters['common/wallet/signer'], {
@@ -49,6 +50,7 @@ const getDefaultState = () => {
 				_Structure: {
 						Params: getStructure(Params.fromPartial({})),
 						SmartContract: getStructure(SmartContract.fromPartial({})),
+						SmartContractWithAddress: getStructure(SmartContractWithAddress.fromPartial({})),
 						
 		},
 		_Registry: registry,
@@ -182,9 +184,13 @@ export default {
 			try {
 				const key = params ?? {};
 				const queryClient=await initQueryClient(rootGetters)
-				let value= (await queryClient.queryAllContracts()).data
+				let value= (await queryClient.queryAllContracts(query)).data
 				
 					
+				while (all && (<any> value).pagination && (<any> value).pagination.next_key!=null) {
+					let next_values=(await queryClient.queryAllContracts({...query, 'pagination.key':(<any> value).pagination.next_key})).data
+					value = mergeResults(value, next_values);
+				}
 				commit('QUERY', { query: 'AllContracts', key: { params: {...key}, query}, value })
 				if (subscribe) commit('SUBSCRIBE', { action: 'QueryAllContracts', payload: { options: { all }, params: {...key},query }})
 				return getters['getAllContracts']( { params: {...key}, query}) ?? {}

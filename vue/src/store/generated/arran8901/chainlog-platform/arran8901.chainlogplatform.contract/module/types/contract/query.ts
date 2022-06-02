@@ -1,6 +1,11 @@
 /* eslint-disable */
 import { Reader, Writer } from "protobufjs/minimal";
 import { Params } from "../contract/params";
+import {
+  PageRequest,
+  PageResponse,
+} from "../cosmos/base/query/v1beta1/pagination";
+import { SmartContractWithAddress } from "../contract/smart_contract";
 
 export const protobufPackage = "arran8901.chainlogplatform.contract";
 
@@ -22,12 +27,13 @@ export interface QueryContractCodeResponse {
   dynamicKb: string;
 }
 
-export interface QueryAllContractsRequest {}
+export interface QueryAllContractsRequest {
+  pagination: PageRequest | undefined;
+}
 
 export interface QueryAllContractsResponse {
-  contractAddress: string;
-  code: string;
-  dynamicKb: string;
+  contracts: SmartContractWithAddress[];
+  pagination: PageResponse | undefined;
 }
 
 const baseQueryParamsRequest: object = {};
@@ -293,9 +299,12 @@ const baseQueryAllContractsRequest: object = {};
 
 export const QueryAllContractsRequest = {
   encode(
-    _: QueryAllContractsRequest,
+    message: QueryAllContractsRequest,
     writer: Writer = Writer.create()
   ): Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -311,6 +320,9 @@ export const QueryAllContractsRequest = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -319,47 +331,57 @@ export const QueryAllContractsRequest = {
     return message;
   },
 
-  fromJSON(_: any): QueryAllContractsRequest {
+  fromJSON(object: any): QueryAllContractsRequest {
     const message = {
       ...baseQueryAllContractsRequest,
     } as QueryAllContractsRequest;
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageRequest.fromJSON(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
     return message;
   },
 
-  toJSON(_: QueryAllContractsRequest): unknown {
+  toJSON(message: QueryAllContractsRequest): unknown {
     const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<QueryAllContractsRequest>
+    object: DeepPartial<QueryAllContractsRequest>
   ): QueryAllContractsRequest {
     const message = {
       ...baseQueryAllContractsRequest,
     } as QueryAllContractsRequest;
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageRequest.fromPartial(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
     return message;
   },
 };
 
-const baseQueryAllContractsResponse: object = {
-  contractAddress: "",
-  code: "",
-  dynamicKb: "",
-};
+const baseQueryAllContractsResponse: object = {};
 
 export const QueryAllContractsResponse = {
   encode(
     message: QueryAllContractsResponse,
     writer: Writer = Writer.create()
   ): Writer {
-    if (message.contractAddress !== "") {
-      writer.uint32(10).string(message.contractAddress);
+    for (const v of message.contracts) {
+      SmartContractWithAddress.encode(v!, writer.uint32(10).fork()).ldelim();
     }
-    if (message.code !== "") {
-      writer.uint32(18).string(message.code);
-    }
-    if (message.dynamicKb !== "") {
-      writer.uint32(26).string(message.dynamicKb);
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -373,17 +395,17 @@ export const QueryAllContractsResponse = {
     const message = {
       ...baseQueryAllContractsResponse,
     } as QueryAllContractsResponse;
+    message.contracts = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.contractAddress = reader.string();
+          message.contracts.push(
+            SmartContractWithAddress.decode(reader, reader.uint32())
+          );
           break;
         case 2:
-          message.code = reader.string();
-          break;
-        case 3:
-          message.dynamicKb = reader.string();
+          message.pagination = PageResponse.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -397,33 +419,33 @@ export const QueryAllContractsResponse = {
     const message = {
       ...baseQueryAllContractsResponse,
     } as QueryAllContractsResponse;
-    if (
-      object.contractAddress !== undefined &&
-      object.contractAddress !== null
-    ) {
-      message.contractAddress = String(object.contractAddress);
-    } else {
-      message.contractAddress = "";
+    message.contracts = [];
+    if (object.contracts !== undefined && object.contracts !== null) {
+      for (const e of object.contracts) {
+        message.contracts.push(SmartContractWithAddress.fromJSON(e));
+      }
     }
-    if (object.code !== undefined && object.code !== null) {
-      message.code = String(object.code);
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageResponse.fromJSON(object.pagination);
     } else {
-      message.code = "";
-    }
-    if (object.dynamicKb !== undefined && object.dynamicKb !== null) {
-      message.dynamicKb = String(object.dynamicKb);
-    } else {
-      message.dynamicKb = "";
+      message.pagination = undefined;
     }
     return message;
   },
 
   toJSON(message: QueryAllContractsResponse): unknown {
     const obj: any = {};
-    message.contractAddress !== undefined &&
-      (obj.contractAddress = message.contractAddress);
-    message.code !== undefined && (obj.code = message.code);
-    message.dynamicKb !== undefined && (obj.dynamicKb = message.dynamicKb);
+    if (message.contracts) {
+      obj.contracts = message.contracts.map((e) =>
+        e ? SmartContractWithAddress.toJSON(e) : undefined
+      );
+    } else {
+      obj.contracts = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -433,23 +455,16 @@ export const QueryAllContractsResponse = {
     const message = {
       ...baseQueryAllContractsResponse,
     } as QueryAllContractsResponse;
-    if (
-      object.contractAddress !== undefined &&
-      object.contractAddress !== null
-    ) {
-      message.contractAddress = object.contractAddress;
-    } else {
-      message.contractAddress = "";
+    message.contracts = [];
+    if (object.contracts !== undefined && object.contracts !== null) {
+      for (const e of object.contracts) {
+        message.contracts.push(SmartContractWithAddress.fromPartial(e));
+      }
     }
-    if (object.code !== undefined && object.code !== null) {
-      message.code = object.code;
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageResponse.fromPartial(object.pagination);
     } else {
-      message.code = "";
-    }
-    if (object.dynamicKb !== undefined && object.dynamicKb !== null) {
-      message.dynamicKb = object.dynamicKb;
-    } else {
-      message.dynamicKb = "";
+      message.pagination = undefined;
     }
     return message;
   },
