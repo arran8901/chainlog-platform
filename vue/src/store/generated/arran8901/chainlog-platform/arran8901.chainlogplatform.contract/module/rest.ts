@@ -9,6 +9,10 @@
  * ---------------------------------------------------------------
  */
 
+export interface ContractMsgCreateContractResponse {
+  contractAddress?: string;
+}
+
 /**
  * Params defines the parameters for the module.
  */

@@ -7,7 +7,18 @@ option go_package = "github.com/arran8901/chainlog-platform/x/contract/types";
 
 // Msg defines the Msg service.
 service Msg {
-    // this line is used by starport scaffolding # proto/tx/rpc
+      rpc CreateContract(MsgCreateContract) returns (MsgCreateContractResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
+}
+
+message MsgCreateContract {
+  string creator = 1;
+  string code = 2;
+  string value = 3;
+}
+
+message MsgCreateContractResponse {
+  string contractAddress = 1;
 }
 
 // this line is used by starport scaffolding # proto/tx/message

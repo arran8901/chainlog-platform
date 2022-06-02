@@ -29734,6 +29734,11 @@ paths:
       tags:
         - Query
 definitions:
+  arran8901.chainlogplatform.contract.MsgCreateContractResponse:
+    type: object
+    properties:
+      contractAddress:
+        type: string
   arran8901.chainlogplatform.contract.Params:
     type: object
     description: Params defines the parameters for the module.
