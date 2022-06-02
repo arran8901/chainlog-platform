@@ -20,6 +20,11 @@ service Query {
 		option (google.api.http).get = "/arran8901/chainlog-platform/contract/contract_code/{contractAddress}";
 	}
 
+// Queries a list of AllContracts items.
+	rpc AllContracts(QueryAllContractsRequest) returns (QueryAllContractsResponse) {
+		option (google.api.http).get = "/arran8901/chainlog-platform/contract/all_contracts";
+	}
+
 // this line is used by starport scaffolding # 2
 }
 
@@ -39,6 +44,15 @@ message QueryContractCodeRequest {
 message QueryContractCodeResponse {
   string code = 1;
   string dynamicKb = 2;
+}
+
+message QueryAllContractsRequest {
+}
+
+message QueryAllContractsResponse {
+  string contractAddress = 1;
+  string code = 2;
+  string dynamicKb = 3;
 }
 
 // this line is used by starport scaffolding # 3

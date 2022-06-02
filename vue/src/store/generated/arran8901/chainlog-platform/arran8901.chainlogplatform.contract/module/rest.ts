@@ -18,6 +18,12 @@ export interface ContractMsgCreateContractResponse {
  */
 export type ContractParams = object;
 
+export interface ContractQueryAllContractsResponse {
+  contractAddress?: string;
+  code?: string;
+  dynamicKb?: string;
+}
+
 export interface ContractQueryContractCodeResponse {
   code?: string;
   dynamicKb?: string;
@@ -238,6 +244,22 @@ export class HttpClient<SecurityDataType = unknown> {
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryAllContracts
+   * @summary Queries a list of AllContracts items.
+   * @request GET:/arran8901/chainlog-platform/contract/all_contracts
+   */
+  queryAllContracts = (params: RequestParams = {}) =>
+    this.request<ContractQueryAllContractsResponse, RpcStatus>({
+      path: `/arran8901/chainlog-platform/contract/all_contracts`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
   /**
    * No description
    *

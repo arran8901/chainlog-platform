@@ -22,6 +22,14 @@ export interface QueryContractCodeResponse {
   dynamicKb: string;
 }
 
+export interface QueryAllContractsRequest {}
+
+export interface QueryAllContractsResponse {
+  contractAddress: string;
+  code: string;
+  dynamicKb: string;
+}
+
 const baseQueryParamsRequest: object = {};
 
 export const QueryParamsRequest = {
@@ -281,6 +289,172 @@ export const QueryContractCodeResponse = {
   },
 };
 
+const baseQueryAllContractsRequest: object = {};
+
+export const QueryAllContractsRequest = {
+  encode(
+    _: QueryAllContractsRequest,
+    writer: Writer = Writer.create()
+  ): Writer {
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryAllContractsRequest {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllContractsRequest,
+    } as QueryAllContractsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryAllContractsRequest {
+    const message = {
+      ...baseQueryAllContractsRequest,
+    } as QueryAllContractsRequest;
+    return message;
+  },
+
+  toJSON(_: QueryAllContractsRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryAllContractsRequest>
+  ): QueryAllContractsRequest {
+    const message = {
+      ...baseQueryAllContractsRequest,
+    } as QueryAllContractsRequest;
+    return message;
+  },
+};
+
+const baseQueryAllContractsResponse: object = {
+  contractAddress: "",
+  code: "",
+  dynamicKb: "",
+};
+
+export const QueryAllContractsResponse = {
+  encode(
+    message: QueryAllContractsResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.contractAddress !== "") {
+      writer.uint32(10).string(message.contractAddress);
+    }
+    if (message.code !== "") {
+      writer.uint32(18).string(message.code);
+    }
+    if (message.dynamicKb !== "") {
+      writer.uint32(26).string(message.dynamicKb);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryAllContractsResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllContractsResponse,
+    } as QueryAllContractsResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.contractAddress = reader.string();
+          break;
+        case 2:
+          message.code = reader.string();
+          break;
+        case 3:
+          message.dynamicKb = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllContractsResponse {
+    const message = {
+      ...baseQueryAllContractsResponse,
+    } as QueryAllContractsResponse;
+    if (
+      object.contractAddress !== undefined &&
+      object.contractAddress !== null
+    ) {
+      message.contractAddress = String(object.contractAddress);
+    } else {
+      message.contractAddress = "";
+    }
+    if (object.code !== undefined && object.code !== null) {
+      message.code = String(object.code);
+    } else {
+      message.code = "";
+    }
+    if (object.dynamicKb !== undefined && object.dynamicKb !== null) {
+      message.dynamicKb = String(object.dynamicKb);
+    } else {
+      message.dynamicKb = "";
+    }
+    return message;
+  },
+
+  toJSON(message: QueryAllContractsResponse): unknown {
+    const obj: any = {};
+    message.contractAddress !== undefined &&
+      (obj.contractAddress = message.contractAddress);
+    message.code !== undefined && (obj.code = message.code);
+    message.dynamicKb !== undefined && (obj.dynamicKb = message.dynamicKb);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllContractsResponse>
+  ): QueryAllContractsResponse {
+    const message = {
+      ...baseQueryAllContractsResponse,
+    } as QueryAllContractsResponse;
+    if (
+      object.contractAddress !== undefined &&
+      object.contractAddress !== null
+    ) {
+      message.contractAddress = object.contractAddress;
+    } else {
+      message.contractAddress = "";
+    }
+    if (object.code !== undefined && object.code !== null) {
+      message.code = object.code;
+    } else {
+      message.code = "";
+    }
+    if (object.dynamicKb !== undefined && object.dynamicKb !== null) {
+      message.dynamicKb = object.dynamicKb;
+    } else {
+      message.dynamicKb = "";
+    }
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -289,6 +463,10 @@ export interface Query {
   ContractCode(
     request: QueryContractCodeRequest
   ): Promise<QueryContractCodeResponse>;
+  /** Queries a list of AllContracts items. */
+  AllContracts(
+    request: QueryAllContractsRequest
+  ): Promise<QueryAllContractsResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -317,6 +495,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryContractCodeResponse.decode(new Reader(data))
+    );
+  }
+
+  AllContracts(
+    request: QueryAllContractsRequest
+  ): Promise<QueryAllContractsResponse> {
+    const data = QueryAllContractsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "arran8901.chainlogplatform.contract.Query",
+      "AllContracts",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllContractsResponse.decode(new Reader(data))
     );
   }
 }
