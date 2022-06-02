@@ -1,0 +1,8 @@
+syntax = "proto3";
+package arran8901.chainlogplatform.contract;
+option go_package = "github.com/arran8901/chainlog-platform/x/contract/types";
+
+message SmartContract {
+  string code = 1;
+  string dynamicKb = 2;
+}

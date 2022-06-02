@@ -1,9 +1,10 @@
 import { txClient, queryClient, MissingWalletError , registry} from './module'
 
 import { Params } from "./module/types/contract/params"
+import { SmartContract } from "./module/types/contract/smart_contract"
 
 
-export { Params };
+export { Params, SmartContract };
 
 async function initTxClient(vuexGetters) {
 	return await txClient(vuexGetters['common/wallet/signer'], {
@@ -45,6 +46,7 @@ const getDefaultState = () => {
 				
 				_Structure: {
 						Params: getStructure(Params.fromPartial({})),
+						SmartContract: getStructure(SmartContract.fromPartial({})),
 						
 		},
 		_Registry: registry,
