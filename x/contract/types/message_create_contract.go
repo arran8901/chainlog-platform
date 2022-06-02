@@ -43,5 +43,11 @@ func (msg *MsgCreateContract) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+
+	value, err := sdk.ParseCoinsNormalized(msg.Value)
+	if err != nil || !value.IsValid() {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "invalid coins value: %s", msg.Value)
+	}
+
 	return nil
 }
