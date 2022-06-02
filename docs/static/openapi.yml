@@ -4,6 +4,45 @@ info:
   name: ''
   description: ''
 paths:
+  '/arran8901/chainlog-platform/contract/contract_code/{contractAddress}':
+    get:
+      summary: Queries a list of ContractCode items.
+      operationId: Arran8901ChainlogplatformContractContractCode
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              dynamicKb:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: contractAddress
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /arran8901/chainlog-platform/contract/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -29742,6 +29781,13 @@ definitions:
   arran8901.chainlogplatform.contract.Params:
     type: object
     description: Params defines the parameters for the module.
+  arran8901.chainlogplatform.contract.QueryContractCodeResponse:
+    type: object
+    properties:
+      code:
+        type: string
+      dynamicKb:
+        type: string
   arran8901.chainlogplatform.contract.QueryParamsResponse:
     type: object
     properties:

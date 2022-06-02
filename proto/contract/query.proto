@@ -15,7 +15,12 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/arran8901/chainlog-platform/contract/params";
   }
-  // this line is used by starport scaffolding # 2
+  // Queries a list of ContractCode items.
+	rpc ContractCode(QueryContractCodeRequest) returns (QueryContractCodeResponse) {
+		option (google.api.http).get = "/arran8901/chainlog-platform/contract/contract_code/{contractAddress}";
+	}
+
+// this line is used by starport scaffolding # 2
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -25,6 +30,15 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryContractCodeRequest {
+  string contractAddress = 1;
+}
+
+message QueryContractCodeResponse {
+  string code = 1;
+  string dynamicKb = 2;
 }
 
 // this line is used by starport scaffolding # 3

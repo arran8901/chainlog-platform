@@ -18,6 +18,11 @@ export interface ContractMsgCreateContractResponse {
  */
 export type ContractParams = object;
 
+export interface ContractQueryContractCodeResponse {
+  code?: string;
+  dynamicKb?: string;
+}
+
 /**
  * QueryParamsResponse is response type for the Query/Params RPC method.
  */
@@ -233,6 +238,22 @@ export class HttpClient<SecurityDataType = unknown> {
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryContractCode
+   * @summary Queries a list of ContractCode items.
+   * @request GET:/arran8901/chainlog-platform/contract/contract_code/{contractAddress}
+   */
+  queryContractCode = (contractAddress: string, params: RequestParams = {}) =>
+    this.request<ContractQueryContractCodeResponse, RpcStatus>({
+      path: `/arran8901/chainlog-platform/contract/contract_code/${contractAddress}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
   /**
    * No description
    *

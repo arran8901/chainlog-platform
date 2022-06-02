@@ -43,6 +43,7 @@ function getStructure(template) {
 const getDefaultState = () => {
 	return {
 				Params: {},
+				ContractCode: {},
 				
 				_Structure: {
 						Params: getStructure(Params.fromPartial({})),
@@ -80,6 +81,12 @@ export default {
 						(<any> params).query=null
 					}
 			return state.Params[JSON.stringify(params)] ?? {}
+		},
+				getContractCode: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.ContractCode[JSON.stringify(params)] ?? {}
 		},
 				
 		getTypeStructure: (state) => (type) => {
@@ -132,6 +139,28 @@ export default {
 				return getters['getParams']( { params: {...key}, query}) ?? {}
 			} catch (e) {
 				throw new Error('QueryClient:QueryParams API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryContractCode({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const queryClient=await initQueryClient(rootGetters)
+				let value= (await queryClient.queryContractCode( key.contractAddress)).data
+				
+					
+				commit('QUERY', { query: 'ContractCode', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryContractCode', payload: { options: { all }, params: {...key},query }})
+				return getters['getContractCode']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryContractCode API Node Unavailable. Could not perform query: ' + e.message)
 				
 			}
 		},
