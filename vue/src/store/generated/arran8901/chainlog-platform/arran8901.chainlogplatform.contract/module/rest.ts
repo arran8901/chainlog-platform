@@ -9,6 +9,8 @@
  * ---------------------------------------------------------------
  */
 
+export type ContractMsgCallContractResponse = object;
+
 export interface ContractMsgCreateContractResponse {
   contractAddress?: string;
 }

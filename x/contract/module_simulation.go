@@ -28,6 +28,10 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgCreateContract int = 100
 
+	opWeightMsgCallContract = "op_weight_msg_call_contract"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCallContract int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -71,6 +75,17 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgCreateContract,
 		contractsimulation.SimulateMsgCreateContract(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgCallContract int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCallContract, &weightMsgCallContract, nil,
+		func(_ *rand.Rand) {
+			weightMsgCallContract = defaultWeightMsgCallContract
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgCallContract,
+		contractsimulation.SimulateMsgCallContract(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation

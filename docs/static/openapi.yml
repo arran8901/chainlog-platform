@@ -29898,6 +29898,8 @@ paths:
       tags:
         - Query
 definitions:
+  arran8901.chainlogplatform.contract.MsgCallContractResponse:
+    type: object
   arran8901.chainlogplatform.contract.MsgCreateContractResponse:
     type: object
     properties:
