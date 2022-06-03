@@ -20,7 +20,7 @@ func (k Keeper) ContractCode(goCtx context.Context, req *types.QueryContractCode
 	// Parse address
 	address, err := sdk.AccAddressFromBech32(req.ContractAddress)
 	if err != nil {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid address: %s (%s)", req.ContractAddress, err.Error())
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid contract address: %s (%s)", req.ContractAddress, err.Error())
 	}
 
 	// Attempt to get contract from store
