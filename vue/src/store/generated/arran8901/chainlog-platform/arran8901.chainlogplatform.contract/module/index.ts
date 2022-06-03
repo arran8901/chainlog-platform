@@ -4,13 +4,13 @@ import { StdFee } from "@cosmjs/launchpad";
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { Registry, OfflineSigner, EncodeObject, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
-import { MsgCreateContract } from "./types/contract/tx";
 import { MsgCallContract } from "./types/contract/tx";
+import { MsgCreateContract } from "./types/contract/tx";
 
 
 const types = [
-  ["/arran8901.chainlogplatform.contract.MsgCreateContract", MsgCreateContract],
   ["/arran8901.chainlogplatform.contract.MsgCallContract", MsgCallContract],
+  ["/arran8901.chainlogplatform.contract.MsgCreateContract", MsgCreateContract],
   
 ];
 export const MissingWalletError = new Error("wallet is required");
@@ -43,8 +43,8 @@ const txClient = async (wallet: OfflineSigner, { addr: addr }: TxClientOptions =
 
   return {
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }: SignAndBroadcastOptions = {fee: defaultFee, memo: ""}) => client.signAndBroadcast(address, msgs, fee,memo),
-    msgCreateContract: (data: MsgCreateContract): EncodeObject => ({ typeUrl: "/arran8901.chainlogplatform.contract.MsgCreateContract", value: MsgCreateContract.fromPartial( data ) }),
     msgCallContract: (data: MsgCallContract): EncodeObject => ({ typeUrl: "/arran8901.chainlogplatform.contract.MsgCallContract", value: MsgCallContract.fromPartial( data ) }),
+    msgCreateContract: (data: MsgCreateContract): EncodeObject => ({ typeUrl: "/arran8901.chainlogplatform.contract.MsgCreateContract", value: MsgCreateContract.fromPartial( data ) }),
     
   };
 };
