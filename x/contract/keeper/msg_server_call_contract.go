@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 
+	chainlog "github.com/arran8901/chainlog-lang"
 	"github.com/arran8901/chainlog-platform/x/contract/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -34,7 +35,57 @@ func (k msgServer) CallContract(goCtx context.Context, msg *types.MsgCallContrac
 		return nil, err
 	}
 
-	_ = contract
+	// Get contract account's balance
+	contractBalance := k.bankKeeper.GetBalance(ctx, contractAddress, types.SmartContractCoinDenom)
+
+	// Initialise new Chainlog interpreter and load code and dynamic KB
+	i := chainlog.NewInterpreter()
+	i.ConsultWithDynamicKB(contract.Code, chainlog.ParseDynamicKBLogicProgram(contract.DynamicKb))
+
+	// Construct message context
+	msgCtx := chainlog.MessageContext{
+		Sender:  chainlog.Address(msg.Creator),
+		Value:   value.Amount.Uint64(),
+		Time:    ctx.BlockTime().Unix(),
+		Balance: contractBalance.Amount.Uint64(),
+	}
+
+	// Submit message to interpreter within this context and get resultant actions
+	// If an exception occurs, return an error
+	actions, err := i.Message(msg.MessageTerm, &msgCtx)
+	if err != nil {
+		return nil, sdkerrors.Wrap(types.ErrContractMessageException, err.Error())
+	}
+
+	// Perform all actions
+	dynamicKbUpdated := false
+	for _, action := range actions {
+		switch v := action.(type) {
+		case chainlog.AssertAction:
+			i.Assert(v.Term)
+			dynamicKbUpdated = true
+		case chainlog.RetractAction:
+			i.Retract(v.Term)
+			dynamicKbUpdated = true
+		case chainlog.TransferAction:
+			// Check to address is a valid address
+			toAddress, err := sdk.AccAddressFromBech32(v.ToAddress)
+			if err != nil {
+				return nil, sdkerrors.Wrapf(types.ErrContractMessageException, "invalid to address: %s in transfer action %s", v.ToAddress, v.String())
+			}
+			// Check the contract has the required balance
+			coin := sdk.NewCoin(types.SmartContractCoinDenom, sdk.NewIntFromUint64(v.Value))
+			if !k.bankKeeper.HasBalance(ctx, contractAddress, coin) {
+				return nil, sdkerrors.Wrapf(types.ErrContractMessageException, "contract has insufficient balance to transfer value of %d", v.Value)
+			}
+			// Perform the coin transfer
+			k.bankKeeper.SendCoins(ctx, contractAddress, toAddress, sdk.NewCoins(coin))
+		}
+	}
+	if dynamicKbUpdated {
+		contract.DynamicKb = chainlog.DynamicKBAsLogicProgram(i.GetDynamicKB())
+		k.SetSmartContract(ctx, contractAddress, contract)
+	}
 
 	return &types.MsgCallContractResponse{}, nil
 }
