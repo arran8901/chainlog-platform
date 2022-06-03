@@ -26,6 +26,11 @@ service Query {
 		option (google.api.http).get = "/arran8901/chainlog-platform/contract/all_contracts";
 	}
 
+// Queries a list of QueryContract items.
+	rpc QueryContract(QueryQueryContractRequest) returns (QueryQueryContractResponse) {
+		option (google.api.http).get = "/arran8901/chainlog-platform/contract/query_contract/{contractAddress}/{query}/{nDerivations}";
+	}
+
 // this line is used by starport scaffolding # 2
 }
 
@@ -54,6 +59,15 @@ message QueryAllContractsRequest {
 message QueryAllContractsResponse {
   repeated SmartContractWithAddress contracts = 1 [(gogoproto.nullable) = false];
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryQueryContractRequest {
+  string contractAddress = 1;
+  string query = 2;
+  string nDerivations = 3;
+}
+
+message QueryQueryContractResponse {
 }
 
 // this line is used by starport scaffolding # 3

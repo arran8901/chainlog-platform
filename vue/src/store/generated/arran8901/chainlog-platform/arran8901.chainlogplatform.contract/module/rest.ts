@@ -48,6 +48,8 @@ export interface ContractQueryParamsResponse {
   params?: ContractParams;
 }
 
+export type ContractQueryQueryContractResponse = object;
+
 export interface ContractSmartContractWithAddress {
   contractAddress?: string;
   code?: string;
@@ -377,6 +379,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryParams = (params: RequestParams = {}) =>
     this.request<ContractQueryParamsResponse, RpcStatus>({
       path: `/arran8901/chainlog-platform/contract/params`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryQueryContract
+   * @summary Queries a list of QueryContract items.
+   * @request GET:/arran8901/chainlog-platform/contract/query_contract/{contractAddress}/{query}/{nDerivations}
+   */
+  queryQueryContract = (contractAddress: string, query: string, nDerivations: string, params: RequestParams = {}) =>
+    this.request<ContractQueryQueryContractResponse, RpcStatus>({
+      path: `/arran8901/chainlog-platform/contract/query_contract/${contractAddress}/${query}/${nDerivations}`,
       method: "GET",
       format: "json",
       ...params,

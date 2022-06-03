@@ -204,6 +204,48 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  '/arran8901/chainlog-platform/contract/query_contract/{contractAddress}/{query}/{nDerivations}':
+    get:
+      summary: Queries a list of QueryContract items.
+      operationId: Arran8901ChainlogplatformContractQueryContract
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: contractAddress
+          in: path
+          required: true
+          type: string
+        - name: query
+          in: path
+          required: true
+          type: string
+        - name: nDerivations
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /cosmos/auth/v1beta1/accounts:
     get:
       summary: Accounts returns all the existing accounts
@@ -29961,6 +30003,8 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  arran8901.chainlogplatform.contract.QueryQueryContractResponse:
+    type: object
   arran8901.chainlogplatform.contract.SmartContractWithAddress:
     type: object
     properties:

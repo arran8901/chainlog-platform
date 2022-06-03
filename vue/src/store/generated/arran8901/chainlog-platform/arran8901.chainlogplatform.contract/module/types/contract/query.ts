@@ -36,6 +36,14 @@ export interface QueryAllContractsResponse {
   pagination: PageResponse | undefined;
 }
 
+export interface QueryQueryContractRequest {
+  contractAddress: string;
+  query: string;
+  nDerivations: string;
+}
+
+export interface QueryQueryContractResponse {}
+
 const baseQueryParamsRequest: object = {};
 
 export const QueryParamsRequest = {
@@ -470,6 +478,173 @@ export const QueryAllContractsResponse = {
   },
 };
 
+const baseQueryQueryContractRequest: object = {
+  contractAddress: "",
+  query: "",
+  nDerivations: "",
+};
+
+export const QueryQueryContractRequest = {
+  encode(
+    message: QueryQueryContractRequest,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.contractAddress !== "") {
+      writer.uint32(10).string(message.contractAddress);
+    }
+    if (message.query !== "") {
+      writer.uint32(18).string(message.query);
+    }
+    if (message.nDerivations !== "") {
+      writer.uint32(26).string(message.nDerivations);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryQueryContractRequest {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryQueryContractRequest,
+    } as QueryQueryContractRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.contractAddress = reader.string();
+          break;
+        case 2:
+          message.query = reader.string();
+          break;
+        case 3:
+          message.nDerivations = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryQueryContractRequest {
+    const message = {
+      ...baseQueryQueryContractRequest,
+    } as QueryQueryContractRequest;
+    if (
+      object.contractAddress !== undefined &&
+      object.contractAddress !== null
+    ) {
+      message.contractAddress = String(object.contractAddress);
+    } else {
+      message.contractAddress = "";
+    }
+    if (object.query !== undefined && object.query !== null) {
+      message.query = String(object.query);
+    } else {
+      message.query = "";
+    }
+    if (object.nDerivations !== undefined && object.nDerivations !== null) {
+      message.nDerivations = String(object.nDerivations);
+    } else {
+      message.nDerivations = "";
+    }
+    return message;
+  },
+
+  toJSON(message: QueryQueryContractRequest): unknown {
+    const obj: any = {};
+    message.contractAddress !== undefined &&
+      (obj.contractAddress = message.contractAddress);
+    message.query !== undefined && (obj.query = message.query);
+    message.nDerivations !== undefined &&
+      (obj.nDerivations = message.nDerivations);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryQueryContractRequest>
+  ): QueryQueryContractRequest {
+    const message = {
+      ...baseQueryQueryContractRequest,
+    } as QueryQueryContractRequest;
+    if (
+      object.contractAddress !== undefined &&
+      object.contractAddress !== null
+    ) {
+      message.contractAddress = object.contractAddress;
+    } else {
+      message.contractAddress = "";
+    }
+    if (object.query !== undefined && object.query !== null) {
+      message.query = object.query;
+    } else {
+      message.query = "";
+    }
+    if (object.nDerivations !== undefined && object.nDerivations !== null) {
+      message.nDerivations = object.nDerivations;
+    } else {
+      message.nDerivations = "";
+    }
+    return message;
+  },
+};
+
+const baseQueryQueryContractResponse: object = {};
+
+export const QueryQueryContractResponse = {
+  encode(
+    _: QueryQueryContractResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryQueryContractResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryQueryContractResponse,
+    } as QueryQueryContractResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryQueryContractResponse {
+    const message = {
+      ...baseQueryQueryContractResponse,
+    } as QueryQueryContractResponse;
+    return message;
+  },
+
+  toJSON(_: QueryQueryContractResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryQueryContractResponse>
+  ): QueryQueryContractResponse {
+    const message = {
+      ...baseQueryQueryContractResponse,
+    } as QueryQueryContractResponse;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -482,6 +657,10 @@ export interface Query {
   AllContracts(
     request: QueryAllContractsRequest
   ): Promise<QueryAllContractsResponse>;
+  /** Queries a list of QueryContract items. */
+  QueryContract(
+    request: QueryQueryContractRequest
+  ): Promise<QueryQueryContractResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -524,6 +703,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryAllContractsResponse.decode(new Reader(data))
+    );
+  }
+
+  QueryContract(
+    request: QueryQueryContractRequest
+  ): Promise<QueryQueryContractResponse> {
+    const data = QueryQueryContractRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "arran8901.chainlogplatform.contract.Query",
+      "QueryContract",
+      data
+    );
+    return promise.then((data) =>
+      QueryQueryContractResponse.decode(new Reader(data))
     );
   }
 }
