@@ -1,5 +1,6 @@
 /* eslint-disable */
-import { Reader, Writer } from "protobufjs/minimal";
+import { Reader, util, configure, Writer } from "protobufjs/minimal";
+import * as Long from "long";
 import { Params } from "../contract/params";
 import {
   PageRequest,
@@ -39,10 +40,22 @@ export interface QueryAllContractsResponse {
 export interface QueryQueryContractRequest {
   contractAddress: string;
   query: string;
-  nDerivations: string;
+  nDerivations: number;
 }
 
-export interface QueryQueryContractResponse {}
+export interface QueryQueryContractResponse {
+  successful: boolean;
+  derivations: QueryContractDerivation[];
+}
+
+export interface QueryContractDerivation {
+  unifications: { [key: string]: string };
+}
+
+export interface QueryContractDerivation_UnificationsEntry {
+  key: string;
+  value: string;
+}
 
 const baseQueryParamsRequest: object = {};
 
@@ -481,7 +494,7 @@ export const QueryAllContractsResponse = {
 const baseQueryQueryContractRequest: object = {
   contractAddress: "",
   query: "",
-  nDerivations: "",
+  nDerivations: 0,
 };
 
 export const QueryQueryContractRequest = {
@@ -495,8 +508,8 @@ export const QueryQueryContractRequest = {
     if (message.query !== "") {
       writer.uint32(18).string(message.query);
     }
-    if (message.nDerivations !== "") {
-      writer.uint32(26).string(message.nDerivations);
+    if (message.nDerivations !== 0) {
+      writer.uint32(24).uint64(message.nDerivations);
     }
     return writer;
   },
@@ -520,7 +533,7 @@ export const QueryQueryContractRequest = {
           message.query = reader.string();
           break;
         case 3:
-          message.nDerivations = reader.string();
+          message.nDerivations = longToNumber(reader.uint64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -548,9 +561,9 @@ export const QueryQueryContractRequest = {
       message.query = "";
     }
     if (object.nDerivations !== undefined && object.nDerivations !== null) {
-      message.nDerivations = String(object.nDerivations);
+      message.nDerivations = Number(object.nDerivations);
     } else {
-      message.nDerivations = "";
+      message.nDerivations = 0;
     }
     return message;
   },
@@ -587,19 +600,25 @@ export const QueryQueryContractRequest = {
     if (object.nDerivations !== undefined && object.nDerivations !== null) {
       message.nDerivations = object.nDerivations;
     } else {
-      message.nDerivations = "";
+      message.nDerivations = 0;
     }
     return message;
   },
 };
 
-const baseQueryQueryContractResponse: object = {};
+const baseQueryQueryContractResponse: object = { successful: false };
 
 export const QueryQueryContractResponse = {
   encode(
-    _: QueryQueryContractResponse,
+    message: QueryQueryContractResponse,
     writer: Writer = Writer.create()
   ): Writer {
+    if (message.successful === true) {
+      writer.uint32(8).bool(message.successful);
+    }
+    for (const v of message.derivations) {
+      QueryContractDerivation.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -612,9 +631,18 @@ export const QueryQueryContractResponse = {
     const message = {
       ...baseQueryQueryContractResponse,
     } as QueryQueryContractResponse;
+    message.derivations = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.successful = reader.bool();
+          break;
+        case 2:
+          message.derivations.push(
+            QueryContractDerivation.decode(reader, reader.uint32())
+          );
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -623,24 +651,228 @@ export const QueryQueryContractResponse = {
     return message;
   },
 
-  fromJSON(_: any): QueryQueryContractResponse {
+  fromJSON(object: any): QueryQueryContractResponse {
     const message = {
       ...baseQueryQueryContractResponse,
     } as QueryQueryContractResponse;
+    message.derivations = [];
+    if (object.successful !== undefined && object.successful !== null) {
+      message.successful = Boolean(object.successful);
+    } else {
+      message.successful = false;
+    }
+    if (object.derivations !== undefined && object.derivations !== null) {
+      for (const e of object.derivations) {
+        message.derivations.push(QueryContractDerivation.fromJSON(e));
+      }
+    }
     return message;
   },
 
-  toJSON(_: QueryQueryContractResponse): unknown {
+  toJSON(message: QueryQueryContractResponse): unknown {
     const obj: any = {};
+    message.successful !== undefined && (obj.successful = message.successful);
+    if (message.derivations) {
+      obj.derivations = message.derivations.map((e) =>
+        e ? QueryContractDerivation.toJSON(e) : undefined
+      );
+    } else {
+      obj.derivations = [];
+    }
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<QueryQueryContractResponse>
+    object: DeepPartial<QueryQueryContractResponse>
   ): QueryQueryContractResponse {
     const message = {
       ...baseQueryQueryContractResponse,
     } as QueryQueryContractResponse;
+    message.derivations = [];
+    if (object.successful !== undefined && object.successful !== null) {
+      message.successful = object.successful;
+    } else {
+      message.successful = false;
+    }
+    if (object.derivations !== undefined && object.derivations !== null) {
+      for (const e of object.derivations) {
+        message.derivations.push(QueryContractDerivation.fromPartial(e));
+      }
+    }
+    return message;
+  },
+};
+
+const baseQueryContractDerivation: object = {};
+
+export const QueryContractDerivation = {
+  encode(
+    message: QueryContractDerivation,
+    writer: Writer = Writer.create()
+  ): Writer {
+    Object.entries(message.unifications).forEach(([key, value]) => {
+      QueryContractDerivation_UnificationsEntry.encode(
+        { key: key as any, value },
+        writer.uint32(10).fork()
+      ).ldelim();
+    });
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): QueryContractDerivation {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryContractDerivation,
+    } as QueryContractDerivation;
+    message.unifications = {};
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          const entry1 = QueryContractDerivation_UnificationsEntry.decode(
+            reader,
+            reader.uint32()
+          );
+          if (entry1.value !== undefined) {
+            message.unifications[entry1.key] = entry1.value;
+          }
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryContractDerivation {
+    const message = {
+      ...baseQueryContractDerivation,
+    } as QueryContractDerivation;
+    message.unifications = {};
+    if (object.unifications !== undefined && object.unifications !== null) {
+      Object.entries(object.unifications).forEach(([key, value]) => {
+        message.unifications[key] = String(value);
+      });
+    }
+    return message;
+  },
+
+  toJSON(message: QueryContractDerivation): unknown {
+    const obj: any = {};
+    obj.unifications = {};
+    if (message.unifications) {
+      Object.entries(message.unifications).forEach(([k, v]) => {
+        obj.unifications[k] = v;
+      });
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryContractDerivation>
+  ): QueryContractDerivation {
+    const message = {
+      ...baseQueryContractDerivation,
+    } as QueryContractDerivation;
+    message.unifications = {};
+    if (object.unifications !== undefined && object.unifications !== null) {
+      Object.entries(object.unifications).forEach(([key, value]) => {
+        if (value !== undefined) {
+          message.unifications[key] = String(value);
+        }
+      });
+    }
+    return message;
+  },
+};
+
+const baseQueryContractDerivation_UnificationsEntry: object = {
+  key: "",
+  value: "",
+};
+
+export const QueryContractDerivation_UnificationsEntry = {
+  encode(
+    message: QueryContractDerivation_UnificationsEntry,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryContractDerivation_UnificationsEntry {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryContractDerivation_UnificationsEntry,
+    } as QueryContractDerivation_UnificationsEntry;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.key = reader.string();
+          break;
+        case 2:
+          message.value = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryContractDerivation_UnificationsEntry {
+    const message = {
+      ...baseQueryContractDerivation_UnificationsEntry,
+    } as QueryContractDerivation_UnificationsEntry;
+    if (object.key !== undefined && object.key !== null) {
+      message.key = String(object.key);
+    } else {
+      message.key = "";
+    }
+    if (object.value !== undefined && object.value !== null) {
+      message.value = String(object.value);
+    } else {
+      message.value = "";
+    }
+    return message;
+  },
+
+  toJSON(message: QueryContractDerivation_UnificationsEntry): unknown {
+    const obj: any = {};
+    message.key !== undefined && (obj.key = message.key);
+    message.value !== undefined && (obj.value = message.value);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryContractDerivation_UnificationsEntry>
+  ): QueryContractDerivation_UnificationsEntry {
+    const message = {
+      ...baseQueryContractDerivation_UnificationsEntry,
+    } as QueryContractDerivation_UnificationsEntry;
+    if (object.key !== undefined && object.key !== null) {
+      message.key = object.key;
+    } else {
+      message.key = "";
+    }
+    if (object.value !== undefined && object.value !== null) {
+      message.value = object.value;
+    } else {
+      message.value = "";
+    }
     return message;
   },
 };
@@ -729,6 +961,16 @@ interface Rpc {
   ): Promise<Uint8Array>;
 }
 
+declare var self: any | undefined;
+declare var window: any | undefined;
+var globalThis: any = (() => {
+  if (typeof globalThis !== "undefined") return globalThis;
+  if (typeof self !== "undefined") return self;
+  if (typeof window !== "undefined") return window;
+  if (typeof global !== "undefined") return global;
+  throw "Unable to locate global object";
+})();
+
 type Builtin = Date | Function | Uint8Array | string | number | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -739,3 +981,15 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+function longToNumber(long: Long): number {
+  if (long.gt(Number.MAX_SAFE_INTEGER)) {
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+  }
+  return long.toNumber();
+}
+
+if (util.Long !== Long) {
+  util.Long = Long as any;
+  configure();
+}

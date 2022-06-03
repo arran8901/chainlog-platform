@@ -64,10 +64,16 @@ message QueryAllContractsResponse {
 message QueryQueryContractRequest {
   string contractAddress = 1;
   string query = 2;
-  string nDerivations = 3;
+  uint64 nDerivations = 3;
 }
 
 message QueryQueryContractResponse {
+  bool successful = 1;
+  repeated QueryContractDerivation derivations = 2;
+}
+
+message QueryContractDerivation {
+  map<string, string> unifications = 1;
 }
 
 // this line is used by starport scaffolding # 3

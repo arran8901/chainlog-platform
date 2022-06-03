@@ -40,6 +40,10 @@ export interface ContractQueryContractCodeResponse {
   dynamicKb?: string;
 }
 
+export interface ContractQueryContractDerivation {
+  unifications?: Record<string, string>;
+}
+
 /**
  * QueryParamsResponse is response type for the Query/Params RPC method.
  */
@@ -48,7 +52,10 @@ export interface ContractQueryParamsResponse {
   params?: ContractParams;
 }
 
-export type ContractQueryQueryContractResponse = object;
+export interface ContractQueryQueryContractResponse {
+  successful?: boolean;
+  derivations?: ContractQueryContractDerivation[];
+}
 
 export interface ContractSmartContractWithAddress {
   contractAddress?: string;

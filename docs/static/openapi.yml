@@ -213,6 +213,18 @@ paths:
           description: A successful response.
           schema:
             type: object
+            properties:
+              successful:
+                type: boolean
+              derivations:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    unifications:
+                      type: object
+                      additionalProperties:
+                        type: string
         default:
           description: An unexpected error response.
           schema:
@@ -244,6 +256,7 @@ paths:
           in: path
           required: true
           type: string
+          format: uint64
       tags:
         - Query
   /cosmos/auth/v1beta1/accounts:
@@ -29996,6 +30009,13 @@ definitions:
         type: string
       dynamicKb:
         type: string
+  arran8901.chainlogplatform.contract.QueryContractDerivation:
+    type: object
+    properties:
+      unifications:
+        type: object
+        additionalProperties:
+          type: string
   arran8901.chainlogplatform.contract.QueryParamsResponse:
     type: object
     properties:
@@ -30005,6 +30025,18 @@ definitions:
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   arran8901.chainlogplatform.contract.QueryQueryContractResponse:
     type: object
+    properties:
+      successful:
+        type: boolean
+      derivations:
+        type: array
+        items:
+          type: object
+          properties:
+            unifications:
+              type: object
+              additionalProperties:
+                type: string
   arran8901.chainlogplatform.contract.SmartContractWithAddress:
     type: object
     properties:

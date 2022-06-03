@@ -6,6 +6,7 @@ import (
 	"github.com/arran8901/chainlog-platform/x/contract/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 )
 
@@ -19,7 +20,10 @@ func CmdQueryContract() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqContractAddress := args[0]
 			reqQuery := args[1]
-			reqNDerivations := args[2]
+			reqNDerivations, err := cast.ToUint64E(args[2])
+			if err != nil {
+				return err
+			}
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
