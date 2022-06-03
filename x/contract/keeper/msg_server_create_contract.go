@@ -13,10 +13,10 @@ func (k msgServer) CreateContract(goCtx context.Context, msg *types.MsgCreateCon
 
 	// Parse creator and value
 	creator, _ := sdk.AccAddressFromBech32(msg.Creator)
-	value, _ := sdk.ParseCoinsNormalized(msg.Value)
+	value, _ := sdk.ParseCoinNormalized(msg.Value)
 
 	// Check sender has enough funds to pay value
-	if balances := k.bankKeeper.GetAllBalances(ctx, creator); value.IsAllGT(balances) {
+	if !k.bankKeeper.HasBalance(ctx, creator, value) {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, "account %s has insufficient funds to pay value %s", msg.Creator, msg.Value)
 	}
 
@@ -29,7 +29,7 @@ func (k msgServer) CreateContract(goCtx context.Context, msg *types.MsgCreateCon
 	k.accountKeeper.SetAccount(ctx, contractAccount)
 
 	// Transfer value from creator to contract
-	err := k.bankKeeper.SendCoins(ctx, creator, contractAddress, value)
+	err := k.bankKeeper.SendCoins(ctx, creator, contractAddress, sdk.NewCoins(value))
 	if err != nil {
 		return nil, err
 	}

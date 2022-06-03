@@ -8,7 +8,8 @@ import (
 )
 
 const (
-	CodeSizeLimit = 65536
+	SmartContractCoinDenom = "token"
+	CodeSizeLimit          = 65536
 )
 
 func ValidateCodeBasic(code string) error {

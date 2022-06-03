@@ -20,6 +20,6 @@ type BankKeeper interface {
 	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
 	// Methods imported from bank should be defined here
 
-	GetAllBalances(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
+	HasBalance(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coin) bool
 	SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
 }
