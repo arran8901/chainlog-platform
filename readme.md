@@ -1,5 +1,6 @@
-# chainlogplatform
-**chainlogplatform** is a blockchain built using Cosmos SDK and Tendermint and created with [Ignite CLI](https://ignite.com/cli).
+# Chainlog Platform
+Repository for the Chainlog smart contract platform.
+The Chainlog Platform is a blockchain built using Cosmos SDK and Tendermint and created with [Ignite CLI](https://ignite.com/cli).
 
 ## Get started
 
