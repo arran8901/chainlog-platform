@@ -31,6 +31,9 @@ func (k Keeper) QueryContract(goCtx context.Context, req *types.QueryQueryContra
 		return nil, sdkerrors.Wrapf(types.ErrContractNotFound, "no contract found at address %s", req.ContractAddress)
 	}
 
+	// Get contract account's balance
+	contractBalance := k.bankKeeper.GetBalance(ctx, address, types.SmartContractCoinDenom)
+
 	// Initialise new Chainlog interpreter and load code and dynamic KB
 	i := chainlog.NewInterpreter()
 	i.ConsultWithDynamicKB(contract.Code, chainlog.ParseDynamicKBLogicProgram(contract.DynamicKb))
@@ -41,11 +44,17 @@ func (k Keeper) QueryContract(goCtx context.Context, req *types.QueryQueryContra
 		Derivations: make([]*types.QueryContractDerivation, 0),
 	}
 
+	// Construct query context
+	queryCtx := chainlog.QueryContext{
+		Time:    ctx.BlockTime().Unix(),
+		Balance: contractBalance.Amount.Uint64(),
+	}
+
 	// Submit query to interpreter
 	// Continue searching for derivations until reaching the given nDerivations or
 	// until there are no more solutions to the query
 	// If an exception occurs at any point, return an error
-	itr, err := i.Query(req.Query)
+	itr, err := i.QueryWithContext(req.Query, &queryCtx)
 	if err != nil {
 		return nil, sdkerrors.Wrapf(types.ErrContractQueryException, err.Error())
 	}

@@ -211,8 +211,8 @@ github.com/armon/go-radix v0.0.0-20180808171621-7fddfc383310/go.mod h1:ufUuZ+zHj
 github.com/armon/go-radix v1.0.0/go.mod h1:ufUuZ+zHj4x4TnLV4JWEpy2hxWSpsRywHrMgIH9cCH8=
 github.com/armon/go-socks5 v0.0.0-20160902184237-e75332964ef5 h1:0CwZNZbxp69SHPdPJAN/hZIm0C4OItdklCFmMRWYpio=
 github.com/armon/go-socks5 v0.0.0-20160902184237-e75332964ef5/go.mod h1:wHh0iHkYZB8zMSxRWpUBQtwG5a7fFgvEO+odwuTv2gs=
-github.com/arran8901/chainlog-lang v0.0.4 h1:2YHFFpz3VeRLOpugng+wtxlNpPYev3BbxYaywtCZ1Zk=
-github.com/arran8901/chainlog-lang v0.0.4/go.mod h1:2A7o7otzKYMufjzexOEo4cz5oh/L6nhwTkxPg5gLXJw=
+github.com/arran8901/chainlog-lang v0.0.7 h1:wGFpVixwaWjibkcG1AlHziBG/VwGExptRhk7VBZwzws=
+github.com/arran8901/chainlog-lang v0.0.7/go.mod h1:2A7o7otzKYMufjzexOEo4cz5oh/L6nhwTkxPg5gLXJw=
 github.com/aryann/difflib v0.0.0-20170710044230-e206f873d14a/go.mod h1:DAHtR1m6lCRdSC2Tm3DSWRPvIPr6xNKyeHdqDQSQT+A=
 github.com/asaskevich/govalidator v0.0.0-20190424111038-f61b66f89f4a/go.mod h1:lB+ZfQJz7igIIfQNfa7Ml4HSf2uFQQRzpGGRXenZAgY=
 github.com/ashanbrown/forbidigo v1.2.0/go.mod h1:vVW7PEdqEFqapJe95xHkTfB1+XvZXBFg8t0sG2FIxmI=

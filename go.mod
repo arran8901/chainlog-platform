@@ -3,7 +3,7 @@ module github.com/arran8901/chainlog-platform
 go 1.16
 
 require (
-	github.com/arran8901/chainlog-lang v0.0.4
+	github.com/arran8901/chainlog-lang v0.0.7
 	github.com/cosmos/cosmos-sdk v0.45.4
 	github.com/cosmos/ibc-go/v2 v2.0.3
 	github.com/gogo/protobuf v1.3.3
